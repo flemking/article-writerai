@@ -1,0 +1,181 @@
+{% extends 'write/base.html' %}
+{% block style %}
+<style>
+    div > span {
+        display: none;
+    }
+    .lds-grid {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+      }
+      .lds-grid div {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: rgb(34,197,94);
+        animation: lds-grid 1.2s linear infinite;
+      }
+      .lds-grid div:nth-child(1) {
+        top: 8px;
+        left: 8px;
+        animation-delay: 0s;
+      }
+      .lds-grid div:nth-child(2) {
+        top: 8px;
+        left: 32px;
+        animation-delay: -0.4s;
+      }
+      .lds-grid div:nth-child(3) {
+        top: 8px;
+        left: 56px;
+        animation-delay: -0.8s;
+      }
+      .lds-grid div:nth-child(4) {
+        top: 32px;
+        left: 8px;
+        animation-delay: -0.4s;
+      }
+      .lds-grid div:nth-child(5) {
+        top: 32px;
+        left: 32px;
+        animation-delay: -0.8s;
+      }
+      .lds-grid div:nth-child(6) {
+        top: 32px;
+        left: 56px;
+        animation-delay: -1.2s;
+      }
+      .lds-grid div:nth-child(7) {
+        top: 56px;
+        left: 8px;
+        animation-delay: -0.8s;
+      }
+      .lds-grid div:nth-child(8) {
+        top: 56px;
+        left: 32px;
+        animation-delay: -1.2s;
+      }
+      .lds-grid div:nth-child(9) {
+        top: 56px;
+        left: 56px;
+        animation-delay: -1.6s;
+      }
+      .hidden{
+        display: none;
+    }
+      @keyframes lds-grid {
+        0%, 100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+</style>
+{% endblock %}
+{% block content %}
+
+{% block h1 %} <span>Text Generator</span> {% endblock %}
+<div class="mx-auto w-full max-w-2xl">
+    {% comment %} action="/upload/" {% endcomment %}
+    <form class="bg-slate-200 shadow-md px-8 pt-6 pb-8 mb-4" id="form" method="POST" enctype="multipart/form-data"> 
+        {% csrf_token %}
+        <label class="block text-gray-700 text-sm font-bold mt-3 mb-1" for="mots_cles">API KEY</label>
+            <p class="text-gray-500 text-xs font-bold leading-3 my-1">Your API Key</p>
+            <input type="password" class="text-sm shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" name="api_key" id="api_key" rows="1" required></input>
+        <br>
+        <label class="block text-gray-700 text-sm font-bold mt-3 mb-1" for="mots_cles">Title</label>
+            <p class="text-gray-500 text-xs font-bold leading-3 my-1">Title of your article</p>
+            <input type="text" class="text-sm shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" name="mots_cles" id="mots_cles" rows="7" required></input>
+        <br>
+        <label class="block text-gray-700 text-sm font-bold mt-3 mb-1" for="template_intro">Your H2/subtitles:</label>
+            <p class="text-gray-500 text-xs font-bold leading-3 my-1">Info: One subtitle per line</p>
+            <textarea class="text-xs shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" name="h2_soustitres" id="h2_soustitres" rows="4" required></textarea>
+        <br>
+        <label class="block text-gray-700 text-sm font-bold mt-3 mb-1" for="template_intro">Prompt for the introduction</label>
+            <p class="text-gray-500 text-xs font-bold leading-3 my-1">Info: {} will be replaced by the title of the article</p>
+            <p class="text-gray-500 text-xs font-bold leading-3 my-1">Prompt en fr: Rédiger une introduction bien détaillée comportant une idée générale avec annonce du plan sur '{}'</p>
+            <textarea class="text-xs shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" name="template_intro" id="template_intro" rows="4" required>{{template.intro}}</textarea>
+            <br>
+            <label class="block text-gray-700 text-sm font-bold mt-3 mb-1" for="template_chapitres">Prompt for Subtitles</label>
+            <p class="text-gray-500 text-xs font-bold leading-3 my-1">Info: {} will be replaced by the title of the article</p>
+            <p class="text-gray-500 text-xs font-bold leading-3 my-1">Prompt en fr: Rédige un long texte détaillé de 3 paragraphes sur '{}'</p>
+            <textarea class="text-xs shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" name="template_chapitres" id="template_chapitres" rows="4" required>{{template.chapitres}}</textarea>
+            <br> 
+            <label class="block text-gray-700 text-sm font-bold mt-3 mb-1" for="template_conclusion">Prompt for Conclusion</label>
+            <p class="text-gray-500 text-xs font-bold leading-3 my-1">Info: {} will be replaced by the title of the article</p>
+            <p class="text-gray-500 text-xs font-bold leading-3 my-1">Prompt en fr: Rédiger une courte conclusion concise en quelques phrases sur '{}'</p>
+            <textarea class="text-xs shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" name="template_conclusion" id="template_conclusion" rows="4" required>{{template.conclusion}}</textarea>
+        <br>
+        <div class="flex items-center justify-end">
+            <button class="bg-green-500 my-5 px-5 py-2 rounded text-white mr-0" type="submit" name="submit" value="submit" id="form-btn">Submit</button> 
+            <div class="lds-grid hidden" id="lds-grid"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        </div> 
+    </form>
+</div>
+{% comment %} {% if user.is_authenticated %}
+<div class="mx-auto w-full bg-gray-900 shadow-md px-8 pt-6 pb-8 mb-4">
+    {% if posts %}
+    <h2 class="text-lg font-bold">Vos articles réçents:</h2>
+    {% for post in posts %}
+    <div class="my-4">
+        <div class="">
+            <h2 class="font-bold">Titre: {{ post.title }}</h2>
+            <p class="">Générer le: {{ post.created_on}}</p>
+            <a class="text-blue-400" href="{% url 'post_detail' post.slug  %}" class="btn btn-primary">Apercu &rarr;</a>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+        <p>No articles available.</p>
+    {% endif %}
+</div>
+{% else %}
+{% block title %}<span>Please Login To see your articles</span>{% endblock %}
+<div class="text-center mx-auto w-full max-w-md bg-gray-100 shadow-md rounded px-8 py-6">
+    <p class="block text-gray-700 text-xl font-bold mb-10">You are not logged in | Please Log in to see your articles</p>
+    <a class="bg-green-500 px-5 py-2 rounded text-white" href="{% url 'login' %}">Log In</a>
+</div>
+{% endif %} {% endcomment %}
+<script src="https://code.jquery.com/jquery-3.5.1.js" 
+          integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" 
+            crossorigin="anonymous"></script>
+  
+<script type="text/javascript">
+$(document).on('submit','#form',function(e){
+    let btn = document.getElementById('form-btn');
+    let anim = document.getElementById('lds-grid');
+    e.preventDefault();
+    btn.classList.add("hidden");
+    anim.classList.remove("hidden");
+    //alert('Démarrer la géneration...')
+    $.ajax({
+        type:'POST',
+        url:'{% url "upload" %}',
+        data:
+        {
+            api_key:$("#api_key").val(),
+            title:$("#mots_cles").val(),
+            h2s:$("#h2_soustitres").val(),
+            template_intro:$("#template_intro").val(),
+            template_chapitres:$("#template_chapitres").val(),
+            template_conclusion:$("#template_conclusion").val(),
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+        },
+        success:function(data){
+                alert('Documentes générer avec succès');
+                $('body').html(data);
+                }
+        ,
+        error: function (error) {
+          // alert the error if any error occured
+          alert("Problème rencontré lors de la génération => openai.error.RateLimitError: The server is currently overloaded with other requests. Sorry about that! You can retry your request, or contact us through our help center at help.openai.com if the error persists.");
+          $('body').html(error);
+      }
+    })
+    });
+</script>
+{% endblock %}

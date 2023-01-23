@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% block style %}{% endblock %}
+    <title>Generator</title>
+</head>
+<body class="flex flex-col mx-auto bg-gray-800 text-white">
+    <h1 class="font-bold text-5xl text-center my-5">{% block h1 %} Text Generator {% endblock %}</h1>
+    {% if user.is_authenticated %}
+    <p class="text-md font-bold absolute top-5 right-5">Hi {{ user.username }}! 
+        {% if request.user.is_superuser %}
+        <a class="underline text-blue-600 font-normal px-3" href="/admin">Admin</a>
+        {% endif %}
+        <a class="text-gray-100 bg-red-500 px-4 py-2 ml-2 rounded" href="{% url 'logout' %}">Log Out</a></p>
+    {% endif %}
+    <div>
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

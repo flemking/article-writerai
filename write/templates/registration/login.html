@@ -1,0 +1,26 @@
+{% extends 'write/base.html' %}
+{% block style %}
+    <style type="text/tailwindcss">
+        @layer utilities {
+        p {
+            margin: 5px 0;
+            color: black;
+        }
+        input{
+            border-radius: 5px;
+            border: 1px solid gray;
+            width: 100%;
+        }
+
+    }
+    </style>
+{% endblock %}
+{% block h1 %}LOGIN{% endblock %}
+{% block content %}
+<form class="flex flex-col mx-auto w-full max-w-sm bg-gray-100 shadow-md rounded px-8 py-6" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="font-bold bg-green-500 py-1 mt-5 rounded text-white" type="submit" name="login">Login</button>
+    <p class="text-center">Don't have an account? <a href="/register" class="text-blue-400">Create one</a> instead.</p>
+</form>
+{% endblock %}
